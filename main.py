@@ -92,6 +92,9 @@ async def main() -> None:
     scheduler.start()
     logger.info("Scheduler started")
 
+    from userbot.client_manager import client_manager
+    client_manager.start_idle_sweeper()
+
     await restore_campaigns(bot)
 
     logger.info("Bot is running. Press Ctrl+C to stop.")
@@ -99,7 +102,6 @@ async def main() -> None:
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
     finally:
         scheduler.shutdown(wait=False)
-        from userbot.client_manager import client_manager
         await client_manager.disconnect_all()
         await bot.session.close()
         logger.info("Bot stopped.")

@@ -26,7 +26,6 @@ def reminder_job_id(campaign_id: int) -> str:
 
 
 async def broadcast_job(campaign_id: int, user_tg_id: int) -> None:
-    logger.info(f"broadcast_job fired: campaign={campaign_id}")
     async with db_base.AsyncSessionFactory() as session:
         campaign = await crud.get_campaign(session, campaign_id)
         if not campaign or campaign.status != "running":
@@ -66,12 +65,10 @@ async def broadcast_job(campaign_id: int, user_tg_id: int) -> None:
             gtitle = getattr(grp, "title", None)
             await crud.create_send_log(session, campaign_id, gid, gtitle, reason.split(":")[0], reason)
 
-        logger.info(f"campaign={campaign_id}: sent={len(ok_ids)}, failed={len(failed)}")
 
 
 async def reminder_job(campaign_id: int, user_tg_id: int) -> None:
     """Sends hourly reminder asking if broadcast should continue."""
-    logger.info(f"reminder_job fired: campaign={campaign_id}")
     async with db_base.AsyncSessionFactory() as session:
         campaign = await crud.get_campaign(session, campaign_id)
         if not campaign or campaign.status != "running":

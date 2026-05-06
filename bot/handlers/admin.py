@@ -2,10 +2,6 @@ import asyncio
 import io
 from datetime import datetime
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 from aiogram import Router
 from aiogram.filters import BaseFilter, Command
 from aiogram.types import BufferedInputFile, Message
@@ -26,6 +22,11 @@ class AdminFilter(BaseFilter):
 
 
 def _build_chart(stats: dict) -> bytes:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import matplotlib.patches as mpatches
+
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
     fig.patch.set_facecolor("#1a1a2e")
 
