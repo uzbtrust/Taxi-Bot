@@ -14,6 +14,9 @@ class Settings(BaseSettings):
 
     @property
     def database_url(self) -> str:
+        import os
+        if os.path.isdir("/data"):
+            return "sqlite+aiosqlite:////data/taxi_bot.db"
         return "sqlite+aiosqlite:///./taxi_bot.db"
 
     @property
