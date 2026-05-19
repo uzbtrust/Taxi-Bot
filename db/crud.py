@@ -269,13 +269,24 @@ async def create_send_log(
     return log
 
 
+async def get_running_campaign(session: AsyncSession, account_id: int) -> Campaign | None:
+    """Returns first running campaign for account, or None."""
+    result = await session.execute(
+        select(Campaign).where(
+            Campaign.account_id == account_id,
+            Campaign.status == "running",
+        ).limit(1)
+    )
+    return result.scalar_one_or_none()
+
+
 # ── Admin stats ───────────────────────────────────────────────────────────────
 
 async def get_admin_stats(session: AsyncSession) -> dict:
-    total_users = (await session.execute(func.count(User.id).select())).scalar() or 0
-    total_accounts = (await session.execute(func.count(Account.id).select())).scalar() or 0
-    total_groups = (await session.execute(func.count(Group.id).select())).scalar() or 0
-    total_campaigns = (await session.execute(func.count(Campaign.id).select())).scalar() or 0
+    total_users     = (await session.execute(select(func.count(User.id)))).scalar() or 0
+    total_accounts  = (await session.execute(select(func.count(Account.id)))).scalar() or 0
+    total_groups    = (await session.execute(select(func.count(Group.id)))).scalar() or 0
+    total_campaigns = (await session.execute(select(func.count(Campaign.id)))).scalar() or 0
     active_campaigns = (
         await session.execute(
             select(func.count(Campaign.id)).where(Campaign.status == "running")

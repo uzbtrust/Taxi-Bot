@@ -29,7 +29,11 @@ def _bar(value: int, max_val: int, width: int = 12) -> str:
 
 @router.message(Command("start"), AdminFilter())
 async def admin_start(message: Message, session: AsyncSession) -> None:
-    stats = await crud.get_admin_stats(session)
+    try:
+        stats = await crud.get_admin_stats(session)
+    except Exception as e:
+        await message.answer(f"❌ Xatolik: <code>{e}</code>", parse_mode="HTML")
+        return
     now = datetime.now().strftime("%d.%m.%Y %H:%M")
 
     # ── 7 kunlik yuborishlar grafigi ─────────────────────────────────────────
