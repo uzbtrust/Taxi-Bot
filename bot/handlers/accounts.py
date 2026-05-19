@@ -75,7 +75,7 @@ async def cb_account_view(
         f"{icon} <b>{name}</b>\n"
         f"📱 Telefon: <code>{acc.phone}</code>\n"
         f"👥 Guruhlar: <b>{len(groups)}</b> ta\n"
-        f"📋 Kampaniya: <b>{'Faol' if campaign else 'Yo\'q'}</b>"
+        f"📋 Kampaniya: <b>{'Faol' if campaign else 'Yoq'}</b>"
     )
     await callback.message.edit_text(
         text,
