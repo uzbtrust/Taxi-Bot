@@ -56,6 +56,21 @@ async def restore_campaigns(bot: Bot) -> None:
             logger.info(f"Restored campaign {camp.id} (every {camp.interval_minutes} min)")
 
 
+async def health_server() -> None:
+    """Minimal HTTP server for Back4App health check on port 8080."""
+    from aiohttp import web
+
+    async def handle(_):
+        return web.Response(text="ok")
+
+    app = web.Application()
+    app.router.add_get("/", handle)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", 8080)
+    await site.start()
+
+
 async def main() -> None:
     os.makedirs("logs", exist_ok=True)
     setup_logger()
@@ -97,6 +112,7 @@ async def main() -> None:
 
     await restore_campaigns(bot)
 
+    await health_server()
     logger.info("Bot is running. Press Ctrl+C to stop.")
     try:
         await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
